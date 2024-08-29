@@ -201,8 +201,8 @@ class ReceiptResource extends Resource
     {
         return [
             'index' => Pages\ListReceipts::route('/'),
-            // 'create' => Pages\CreateReceipt::route('/create'),
-            // 'edit' => Pages\EditReceipt::route('/{record}/edit'),
+            'create' => Pages\CreateReceipt::route('/create'),
+            'edit' => Pages\EditReceipt::route('/{record}/edit'),
         ];
     }
 }

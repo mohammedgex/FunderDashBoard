@@ -74,4 +74,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Sale::class);
     }
+
+    public function properties()
+    {
+        return $this->hasManyThrough(Property::class, Funder::class);
+    }
 }

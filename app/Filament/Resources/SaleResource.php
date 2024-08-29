@@ -3,15 +3,14 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SaleResource\Pages;
-use App\Filament\Resources\SaleResource\RelationManagers;
 use App\Models\Sale;
+use Filament\Tables\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Notifications\Notification;
 
 class SaleResource extends Resource
 {
@@ -28,15 +27,18 @@ class SaleResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('property_id')
+                Forms\Components\Select::make('property_id')
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('user_id')
+                    ->relationship('property', 'name')
+                    ->columnSpanFull(),
+                Forms\Components\Select::make('user_id')
                     ->required()
-                    ->numeric(),
+                    ->relationship('user', 'name')
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('status')
                     ->required()
-                    ->maxLength(255),
+                    ->default('pending')
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -44,13 +46,13 @@ class SaleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('property_id')
+                Tables\Columns\TextColumn::make('property.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user_id')
+                Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\BadgeColumn::make('status')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -65,6 +67,41 @@ class SaleResource extends Resource
                 //
             ])
             ->actions([
+                Action::make('Accept')
+                    ->label('Accept')
+                    ->button()
+                    ->action(function (Sale $record) {
+                        // Execute the valid() logic here
+                        $sale = Sale::find($record->id);
+                        $sale->status = 'accepted';
+                        $sale->save();
+                        Notification::make()
+                            ->title('Accepted')
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->color('success')
+                    ->visible(fn(Sale $record) => $record->status === 'pending')
+                    ->icon('heroicon-s-check-circle'),
+
+                Action::make('Reject')
+                    ->label('Reject')
+                    ->button()
+                    ->action(function (Sale $record) {
+                        // Execute the notValid() logic here
+                        $sale = Sale::find($record->id);
+                        $sale->status = 'rejected';
+                        $sale->save();
+                        Notification::make()
+                            ->title('Rejected')
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->color('warning')
+                    ->visible(fn(Sale $record) => $record->status === 'pending')
+                    ->icon('heroicon-s-x-circle'),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

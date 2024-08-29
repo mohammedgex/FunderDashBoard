@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->string('images');
-            $table->date('funded_date');
+            $table->date('funded_date')->nullable();
             $table->integer('purchase_price');
             $table->integer('funder_count');
             $table->integer('rental_income');

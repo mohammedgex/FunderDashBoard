@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-
+use App\Filament\Resources\UserResource\RelationManagers\PropertiesRelationManager;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
@@ -37,7 +37,6 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->columnSpanFull()
-
                     ->email()
                     ->required()
                     ->maxLength(255),
@@ -60,6 +59,7 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
+                Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('phone')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('identification_verified_at')
@@ -77,6 +77,7 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
+
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -89,7 +90,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PropertiesRelationManager::class
         ];
     }
 

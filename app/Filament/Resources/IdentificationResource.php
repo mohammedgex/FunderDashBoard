@@ -84,10 +84,8 @@ class IdentificationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('front_side')
-                    ->searchable(),
-                Tables\Columns\ImageColumn::make('back_side')
-                    ->searchable(),
+                Tables\Columns\ImageColumn::make('front_side'),
+                Tables\Columns\ImageColumn::make('back_side'),
                 Tables\Columns\TextColumn::make('type')
                     ->searchable(),
                 Tables\Columns\BadgeColumn::make('status')
@@ -125,7 +123,7 @@ class IdentificationResource extends Resource
                     })
                     ->requiresConfirmation()
                     ->color('success')
-                    ->visible(fn(Identification $record) => $record->status === 'pending')
+                    ->visible(fn(Identification $record) => $record->status === 'Waiting')
                     ->icon('heroicon-s-check-circle'),
                 Action::make('Reject')
                     ->label('Reject')
@@ -142,7 +140,7 @@ class IdentificationResource extends Resource
                     })
                     ->requiresConfirmation()
                     ->color('warning')
-                    ->visible(fn(Identification $record) => $record->status === 'pending')
+                    ->visible(fn(Identification $record) => $record->status === 'Waiting')
                     ->icon('heroicon-s-x-circle'),
                 Tables\Actions\EditAction::make(),
             ])

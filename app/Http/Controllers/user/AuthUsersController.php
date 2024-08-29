@@ -25,7 +25,7 @@ class AuthUsersController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'image' => 'required',
+            // 'image' => 'required',
             'phone' => 'required',
             'email' => 'required|email',
             'password' => 'required',
@@ -48,11 +48,11 @@ class AuthUsersController extends Controller
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->email = $request->email;
-        if ($request->has('image')) {
-            $filename = Str::random(32) . "." . $request->image->getClientOriginalExtension();
-            $request->image->move('uploads/', $filename);
-            $user->image = $filename;
-        }
+        // if ($request->has('image')) {
+        //     $filename = Str::random(32) . "." . $request->image->getClientOriginalExtension();
+        //     $request->image->move('uploads/', $filename);
+        //     $user->image = $filename;
+        // }
         $user->password = bcrypt($request->password);
 
         $role = new Role();

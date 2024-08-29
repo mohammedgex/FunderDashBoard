@@ -12,6 +12,7 @@ use App\Http\Controllers\TimelineController;
 use App\Http\Controllers\user\AuthUsersController;
 use App\Http\Controllers\user\IdentificationController;
 use Illuminate\Support\Facades\Route;
+use App\Filament\Pages\ShowUserProperties;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');

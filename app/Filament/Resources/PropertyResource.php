@@ -3,16 +3,19 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PropertyResource\Pages;
-use App\Filament\Resources\PropertyResource\RelationManagers;
+use App\Filament\Resources\PropertyResource\RelationManagers\FundersRelationManager;
+use App\Filament\Resources\PropertyResource\RelationManagers\TimelinesRelationManager;
+use App\Filament\Resources\PropertyResource\RelationManagers\RentsRelationManager;
 use App\Models\Property;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Infolist;
 use Filament\Tables\Actions\Action;
+
 class PropertyResource extends Resource
 {
     protected static ?string $model = Property::class;
@@ -142,18 +145,14 @@ class PropertyResource extends Resource
                             ->required()
                             ->maxLength(255),
                     ])->columns(3),
-                Forms\Components\ToggleButtons::make('status')
+                Forms\Components\Select::make('status')
                     ->columnSpanFull()
                     ->options([
+                        "avalible" => "avalible",
                         "funded" => "Funded",
                         "rented" => "Rented",
                         "sold out" => "Sold Out",
 
-                    ])
-                    ->icons([
-                        "funded" => "heroicon-s-identification",
-                        "rented" => "heroicon-s-identification",
-                        "sold out" => "heroicon-s-identification",
                     ])
                     ->columns(3)
                     ->required()
@@ -169,7 +168,6 @@ class PropertyResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('images')
                     ->searchable(),
@@ -181,7 +179,6 @@ class PropertyResource extends Resource
                     ->suffix(' EGP')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('funder_count')
-
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('rental_income')
@@ -239,7 +236,7 @@ class PropertyResource extends Resource
             ])
             ->actions([
                 Action::make('sold out')
-                    ->label('SOLD OUT')
+                    ->label('Sold out')
                     ->button()
                     ->action(function (Property $record) {
                         // Execute the gosoldout logic here
@@ -249,9 +246,14 @@ class PropertyResource extends Resource
                     })
                     ->requiresConfirmation()
                     ->color('warning')
-                    ->visible(fn(Property $record) => $record->status !== 'sold out')
-                    ->icon('heroicon-s-currency-pound'),
-                Tables\Actions\EditAction::make(),
+                    ->visible(fn(Property $record) => $record->status !== 'sold out'),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ])
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->color('primary')
 
             ])
             ->bulkActions([
@@ -261,10 +263,18 @@ class PropertyResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        // No direct support for dynamic data in infolist directly
+        return $infolist;
+    }
     public static function getRelations(): array
     {
         return [
-            //
+            FundersRelationManager::class,
+            TimelinesRelationManager::class,
+            RentsRelationManager::class
+
         ];
     }
 
