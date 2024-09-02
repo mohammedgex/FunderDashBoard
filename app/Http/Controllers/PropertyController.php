@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Favorite;
 use App\Models\Funder;
 use App\Models\Location;
 use App\Models\Property;
@@ -34,7 +35,7 @@ class PropertyController extends Controller
 
     public function available()
     {
-        $properties = Property::where('status', null)->get();
+        $properties = Property::where('status', 'available')->get();
         return view('Properties.properties', ['properties' => $properties]);
     }
 
@@ -48,6 +49,15 @@ class PropertyController extends Controller
     public function all()
     {
         $properties = Property::all();
+        $user = auth()->user();
+        foreach ($properties as $property) {
+            $favorite = Favorite::where(['property_id' => $property->id, 'user_id' => $user->id])->first();
+            if ($favorite) {
+                $property->if_favorite = 'true';
+            } elseif (!$favorite) {
+                $property->if_favorite = 'false';
+            }
+        }
 
         return response()->json([
             'success' => true,
@@ -88,20 +98,10 @@ class PropertyController extends Controller
             $property->if_user_shared = false;
         }
 
-        $count_sheres = $property->receipts()->count();
-
-        if ($count_sheres == $property->funder_count + $property->funder_count * 1 / 5) {
-            return response()->json([
-                'success' => true,
-                'properties' => $property,
-                'message' => 'Number of orders completed'
-            ]);
-        }
-
         return response()->json([
             'success' => true,
             'properties' => $property,
-            'count-shars' => $user_shared
+            'user-count-shars' => $user_shared
         ]);
     }
 

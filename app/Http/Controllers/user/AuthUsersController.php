@@ -25,7 +25,7 @@ class AuthUsersController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            // 'image' => 'required',
+            'image' => 'required',
             'phone' => 'required',
             'email' => 'required|email',
             'password' => 'required',
@@ -48,11 +48,11 @@ class AuthUsersController extends Controller
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->email = $request->email;
-        // if ($request->has('image')) {
-        //     $filename = Str::random(32) . "." . $request->image->getClientOriginalExtension();
-        //     $request->image->move('uploads/', $filename);
-        //     $user->image = $filename;
-        // }
+        if ($request->has('image')) {
+            $filename = Str::random(32) . "." . $request->image->getClientOriginalExtension();
+            $request->image->move('uploads/', $filename);
+            $user->image = $filename;
+        }
         $user->password = bcrypt($request->password);
 
         $role = new Role();
@@ -99,7 +99,8 @@ class AuthUsersController extends Controller
         $token = $user->createToken($user->name);
         return response()->Json(
             [
-                "token" => $token->plainTextToken, 'user' => $user
+                "token" => $token->plainTextToken,
+                'user' => $user
             ]
         );
     }
@@ -112,6 +113,11 @@ class AuthUsersController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json([
+                'error' => 'user does not exist',
+            ]);
+        }
 
         $user->notify(new EmailVerificationNotification());
 
@@ -244,6 +250,7 @@ class AuthUsersController extends Controller
 
         return response()->json([
             'success' => true,
+            'user' => $user
         ]);
     }
 

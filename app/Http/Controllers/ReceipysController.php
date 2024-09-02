@@ -82,8 +82,13 @@ class ReceipysController extends Controller
             ], 400);
         }
 
-        $count_sheres_of_property = array_sum($property->receipts()->where('status', '!=', 'rejected')->pluck('count_sheres')->toArray());
-        if ($count_sheres_of_property == $property->funder_count + $property->funder_count * 1 / 5) {
+        $count_sheres_of_property_pending = array_sum($property->receipts()->where('status', 'pending')->pluck('count_sheres')->toArray());
+        if ($count_sheres_of_property_pending + $request->count_sheres > ($property->funder_count + $property->funder_count * 1 / 5) - $property->funders->count()) {
+            return response()->json([
+                'error' => 'The purchase could not be completed because the number of available orders is ' . $property->funder_count  + $property->funder_count * 1 / 5 - $property->funders->count()
+            ], 400);
+        }
+        if ($count_sheres_of_property_pending == ($property->funder_count + $property->funder_count * 1 / 5) - $property->funders->count()) {
             return response()->json([
                 'error' => 'Number of orders completed'
             ], 400);

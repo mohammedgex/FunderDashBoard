@@ -45,10 +45,12 @@ class WalletController extends Controller
 
         foreach ($properties_of_monthly_income as $prop) {
             $rent = $prop->rents->where('status', 'active')->first();
-            $date = Carbon::parse($rent->end_date);
-            if ($date->isPast()) {
-                $count_shere = Funder::where(['status' => 'funder', 'user_id' => $user->id, 'property_id' => $prop->id])->count();
-                $monthly_income += (intval($prop->current_rent) * $count_shere);
+            if ($rent) {
+                $date = Carbon::parse($rent->end_date);
+                if ($date->isPast()) {
+                    $count_shere = Funder::where(['status' => 'funder', 'user_id' => $user->id, 'property_id' => $prop->id])->count();
+                    $monthly_income += (intval($prop->current_rent) * $count_shere);
+                }
             }
         }
 
