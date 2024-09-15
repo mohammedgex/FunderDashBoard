@@ -52,10 +52,12 @@ class SocialiteController extends Controller
         }
     }
 
-    public function handleFacebookCallback()
+    public function handleFacebookCallback(Request $request)
     {
+        $token = $request->token;
         try {
-            $user = Socialite::driver('facebook')->user();
+            $user = Socialite::driver('facebook')->userFromToken($token);
+
             $finduser = User::where('social_id', $user->id)->first();
 
             if ($finduser) {
