@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->string('images');
+            $table->json('images')->nullable();
             $table->date('funded_date')->nullable();
             $table->integer('purchase_price');
             $table->integer('funder_count');

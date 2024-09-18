@@ -173,7 +173,7 @@ class PropertyController extends Controller
         if ($request->has('images')) {
             foreach ($request->file('images') as $file) {
                 $filename = Str::random(32) . "." . $file->getClientOriginalExtension();
-                $file->move('uploads/', $filename);
+                $file->move('storage/', $filename);
                 array_push($imagesName, $filename);
             }
 
@@ -259,7 +259,7 @@ class PropertyController extends Controller
         if ($request->has('images')) {
             foreach ($request->file('images') as $file) {
                 $filename = Str::random(32) . "." . $file->getClientOriginalExtension();
-                $file->move('uploads/', $filename);
+                $file->move('storage/', $filename);
                 array_push($imagesA, $filename);
             }
         }
@@ -385,7 +385,7 @@ class PropertyController extends Controller
             $index = array_search($imageName, $imagesA);
             if ($index !== false) {
                 unset($imagesA[$index]);
-                $imagePath = public_path('uploads/' . $imageName);
+                $imagePath = public_path('storage/' . $imageName);
 
                 if (File::exists($imagePath)) {
                     File::delete($imagePath);

@@ -72,6 +72,7 @@ class SocialiteController extends Controller
                     'name' => $user->name,
                     'image' => $user->avatar,
                     'phone' => $user->phone,
+                    
                     'email' => $user->email,
                     'social_id' => $user->id,
                     'social_type' => 'facebook',

@@ -170,7 +170,7 @@ class PropertyResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('images')
-                    ->searchable(),
+                ,
                 Tables\Columns\TextColumn::make('funded_date')
                     ->date()
                     ->sortable(),

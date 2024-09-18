@@ -50,7 +50,7 @@ class AuthUsersController extends Controller
         $user->email = $request->email;
         if ($request->has('image')) {
             $filename = Str::random(32) . "." . $request->image->getClientOriginalExtension();
-            $request->image->move('uploads/', $filename);
+            $request->image->move('storage/', $filename);
             $user->image = $filename;
         }
         $user->password = bcrypt($request->password);
@@ -242,7 +242,7 @@ class AuthUsersController extends Controller
 
         if ($request->has('image')) {
             $filename = Str::random(32) . "." . $request->image->getClientOriginalExtension();
-            $request->image->move('uploads/', $filename);
+            $request->image->move('storage/', $filename);
             $user->image = $filename;
         }
 
@@ -278,7 +278,7 @@ class AuthUsersController extends Controller
 
         $user = User::find($id);
         $filename = Str::random(32) . "." . $request->image->getClientOriginalExtension();
-        $request->image->move('uploads/', $filename);
+        $request->image->move('storage/', $filename);
         $user->image = $filename;
         $user->save();
         return redirect()->route('profile.edit');

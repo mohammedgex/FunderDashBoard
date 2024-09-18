@@ -114,7 +114,7 @@ class ReceipysController extends Controller
 
         if ($request->has('image')) {
             $filename = Str::random(32) . "." . $request->image->getClientOriginalExtension();
-            $request->image->move('uploads/', $filename);
+            $request->image->move('storage/', $filename);
             $receipt->image = $filename;
         } else {
             return response()->json([
