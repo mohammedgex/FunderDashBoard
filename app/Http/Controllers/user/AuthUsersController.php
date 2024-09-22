@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Notifications\EmailVerificationNotification;
 use App\Notifications\ResetPasswordVerificationNotification;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -222,7 +223,7 @@ class AuthUsersController extends Controller
             $token->delete();
         });
 
-        $token =  $user->createToken($user->name);
+        $token = $user->createToken($user->name);
 
         return response()->Json(['success' => true, "token" => $token, "message" => "Success updating password"], 200);
     }
@@ -282,5 +283,23 @@ class AuthUsersController extends Controller
         $user->image = $filename;
         $user->save();
         return redirect()->route('profile.edit');
+    }
+
+    public function getUserData()
+    {
+        // Get the currently authenticated user
+        $user = Auth::user();
+
+        // Check if a user is authenticated
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not authenticated'
+            ], 401);
+        }
+
+        // Return the user's data
+        return response()->json([
+            'user' => $user
+        ], 200);
     }
 }

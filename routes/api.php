@@ -129,7 +129,12 @@ Route::middleware('auth:sanctum')->group(
         // get Properties in which the user participates
         Route::get('/properties/shere/panding', [WalletController::class, 'propOfSheres']);
         Route::get('/properties/propertyDetails/{id}', [WalletController::class, 'propertyDetails']);
+
+        Route::get('/userData', [AuthUsersController::class, 'getUserData']);
+        Route::get('/userIdentification', [IdentificationController::class, 'getUserIdentification']);
+
     }
+
 );
 
 

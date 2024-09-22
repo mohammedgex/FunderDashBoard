@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
+use Auth;
 use Illuminate\Http\Request;
 use App\Models\Identification;
 use Illuminate\Support\Str;
@@ -110,5 +111,26 @@ class IdentificationController extends Controller
         $identification->save();
 
         return redirect()->route('identify.show', $id);
+    }
+
+    public function getUserIdentification()
+    {
+        // Get the currently authenticated user
+        $user = Auth::user();
+
+        // Fetch identification data for the authenticated user
+        $identification = Identification::where('user_id', $user->id)->first();
+
+        // If no identification is found, return a 404 response
+        if (!$identification) {
+            return response()->json([
+                'message' => 'Identification not found'
+            ], 404);
+        }
+
+        // Return the identification data
+        return response()->json([
+            'identification' => $identification
+        ], 200);
     }
 }
