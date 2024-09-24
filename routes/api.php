@@ -41,7 +41,7 @@ Route::post('/user/login', [AuthUsersController::class, 'login']);
 Route::post('/user/send-code', [AuthUsersController::class, 'sendCodeVerification']);
 // Code comparison
 Route::post('/user/verification', [AuthUsersController::class, 'verificationCode']);
-// forget password
+// forget password3e5
 Route::post('/user/forget-password', [AuthUsersController::class, 'forgetPassword']);
 // confirm code in forgot password
 Route::post('/user/confirm-code', [AuthUsersController::class, 'verificationCodeWithResetPassword']);
@@ -132,6 +132,7 @@ Route::middleware('auth:sanctum')->group(
 
         Route::get('/userData', [AuthUsersController::class, 'getUserData']);
         Route::get('/userIdentification', [IdentificationController::class, 'getUserIdentification']);
+        Route::post('/user/identification/{id}', [IdentificationController::class, 'updateIdentification']);
 
     }
 
