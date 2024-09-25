@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Funder;
 use App\Models\Property;
 use App\Models\Receipt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Notification;
+use App\Notifications\Notifications;
 
 class ReceipysController extends Controller
 {
@@ -123,6 +124,8 @@ class ReceipysController extends Controller
         }
 
         $receipt->save();
+
+        Notification::send($user, new Notifications('receipt ', 'the payment recept you pay has been sent to admin.', '50'));
 
         return response()->json([
             'success' => true,

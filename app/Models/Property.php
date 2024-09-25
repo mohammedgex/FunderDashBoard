@@ -12,7 +12,7 @@ class Property extends Model
         'name',
         'description',
         'images',
-        'funded_data',
+        'funded_date',
         'purchase_price',
         'funder_count',
         'rental_income',
@@ -20,7 +20,8 @@ class Property extends Model
         'current_evaluation',
         'percent',
         'location_string',
-        'location_point',
+        'location_longitude',
+        'location_latitude',
         'property_price_total',
         'property_price',
         'service_charge',
@@ -34,7 +35,7 @@ class Property extends Model
     ];
     protected $casts = [
         'images' =>  'array',
-        'funded_data' => 'date'
+        'funded_date' => 'date'
     ];
     public function category()
     {

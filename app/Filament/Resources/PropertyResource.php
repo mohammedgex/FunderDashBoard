@@ -113,10 +113,17 @@ class PropertyResource extends Resource
                             ->required()
                             ->suffix('%')
                             ->numeric(),
-                    ])->columns(3),
+                    ])->columns(columns: 3),
                 Forms\Components\DatePicker::make('funded_date')
                     ->columnSpanFull()
                 ,
+                Forms\Components\TextInput::make('location_longitude')
+                    ->required()
+                    ->prefixIcon('heroicon-o-map-pin'),
+
+                Forms\Components\TextInput::make('location_latitude')
+                    ->required()
+                    ->prefixIcon('heroicon-o-map-pin'),
                 Forms\Components\TextInput::make('funder_count')
                     ->columnSpanFull()
                     ->required()
@@ -216,6 +223,10 @@ class PropertyResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
+                    ->searchable(),
+                Tables\Columns\BadgeColumn::make('location_longitude')
+                    ->searchable(),
+                Tables\Columns\BadgeColumn::make('location_latitude')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('approved')
                     ->dateTime()

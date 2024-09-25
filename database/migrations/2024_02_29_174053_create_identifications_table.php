@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('back_side');
             $table->string('type');
             $table->string('status');
+            $table->string('notes')->nullable();
             $table->foreignId("user_id")->constrained("users")->cascadeOnDelete();
             $table->timestamps();
         });

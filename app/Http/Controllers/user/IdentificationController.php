@@ -1,14 +1,14 @@
 <?php
 
 namespace App\Http\Controllers\user;
-
 use App\Http\Controllers\Controller;
 use Auth;
 use Illuminate\Http\Request;
 use App\Models\Identification;
 use Illuminate\Support\Str;
 use App\Models\User;
-use Validator;
+use Notification;
+use App\Notifications\Notifications;
 
 class IdentificationController extends Controller
 {
@@ -86,6 +86,7 @@ class IdentificationController extends Controller
 
         // Save the updated identification record
         $user->identification()->save($identification);
+        Notification::send($user, new Notifications('identification updated', 'tour identification has been updated , wait for acceptance.', '50'));
         return response()->json(['success' => 'Identification updated successfully']);
     }
 

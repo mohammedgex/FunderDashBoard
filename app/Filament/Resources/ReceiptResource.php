@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Filament\Resources;
-
+use App\Models\User;
+use App\Notifications\Notifications;
 use App\Filament\Resources\ReceiptResource\Pages;
 use App\Models\Receipt;
 use App\Models\Funder;
@@ -11,7 +12,9 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
-use Filament\Notifications\Notification;
+use Filament\Notifications\Notification as snackbar;
+use Notification;
+
 
 
 class ReceiptResource extends Resource
@@ -146,11 +149,11 @@ class ReceiptResource extends Resource
                                 ]);
                             }
                         }
-
+                        Notification::send(User::find($receipt->user_id), new Notifications('receipt accepted', 'the payment receipt you have requested has been accepcted', '50'));
                         $receipt->status = 'accepted';
                         $receipt->save();
 
-                        Notification::make()
+                        snackbar::make()
                             ->title('Accepted')
                             ->success()
                             ->send();
@@ -165,9 +168,10 @@ class ReceiptResource extends Resource
                     ->action(function (Receipt $record) {
                         // Execute the rejected logic here
                         $receipt = Receipt::find($record->id);
+                        Notification::send(User::find($receipt->user_id), new Notifications('receipt rejected', 'the payment receipt you have requested has been rejected', '50'));
                         $receipt->status = 'rejected';
                         $receipt->save();
-                        Notification::make()
+                        snackbar::make()
                             ->title('Rejected')
                             ->success()
                             ->send();

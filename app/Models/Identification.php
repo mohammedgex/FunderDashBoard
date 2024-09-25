@@ -13,6 +13,7 @@ class Identification extends Model
         'back_side',
         'type',
         'status',
+        'notes',
         'user_id',
     ];
 

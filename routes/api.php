@@ -142,4 +142,4 @@ Route::middleware('auth:sanctum')->group(
 // // notifications 
 // // Notification::send($user, new Notifications('login', 'login true', '50'));
 // // notifications in application
-// Route::get('/notifications', [NotificationsController::class, 'all'])->middleware('auth:sanctum');
+Route::get('/notifications', [NotificationsController::class, 'all'])->middleware('auth:sanctum');

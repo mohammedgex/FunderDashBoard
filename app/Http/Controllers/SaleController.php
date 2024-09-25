@@ -7,6 +7,8 @@ use App\Models\Property;
 use App\Models\Sale;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Notification;
+use App\Notifications\Notifications;
 
 class SaleController extends Controller
 {
@@ -84,6 +86,7 @@ class SaleController extends Controller
                 'errors' => 'The sale does not occur until at least one year has passed since you purchased the property'
             ], 400);
         }
+        Notification::send($user, new Notifications('sales request', 'the sale you created has been sent to admin.', '50'));
 
         return response()->json([
             'success' => true,

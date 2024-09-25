@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -23,6 +22,8 @@ return new class extends Migration
             $table->integer('current_rent');
             $table->integer('percent');
             $table->string('location_string');
+            $table->string('location_longitude');
+            $table->string('location_latitude');
             $table->integer('property_price_total');
             $table->string('property_price');
             $table->string('current_evaluation');

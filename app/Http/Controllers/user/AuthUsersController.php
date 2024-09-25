@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
 use App\Notifications\EmailVerificationNotification;
+use App\Notifications\Notifications;
 use App\Notifications\ResetPasswordVerificationNotification;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Ichtrojan\Otp\Otp;
+use Notification;
 
 class AuthUsersController extends Controller
 {
@@ -91,11 +93,11 @@ class AuthUsersController extends Controller
             return response()->Json(["error" => 'username or password is incorrect']);
         }
 
-        // if ($user->email_verified_at === null) {
-        //     return response()->json([
-        //         'error' => 'Please confirm your email.',
-        //     ], 400);
-        // }
+        if ($user->email_verified_at === null) {
+            return response()->json([
+                'error' => 'Please confirm your email.',
+            ], 400);
+        }
 
         $token = $user->createToken($user->name);
         return response()->Json(
@@ -143,6 +145,8 @@ class AuthUsersController extends Controller
         $user = User::where('email', $request->email)->first();
         $user->email_verified_at = now();
         $user->save();
+
+        Notification::send($user, new Notifications('account activation', 'account activation has been successfully verfied.', '50'));
 
         return response()->json([
             'message' => 'code is true',

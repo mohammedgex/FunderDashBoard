@@ -6,12 +6,14 @@ use App\Filament\Resources\IdentificationResource\Pages;
 use App\Models\Identification;
 use Filament\Forms;
 use Filament\Forms\Form;
+use App\Notifications\Notifications;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
-use Filament\Notifications\Notification;
 use App\Models\User;
+use Filament\Notifications\Notification as snackbar;
+use Notification;
 
 class IdentificationResource extends Resource
 {
@@ -74,6 +76,9 @@ class IdentificationResource extends Resource
                     ->columnSpanFull()
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('notes')
+                    ->columnSpanFull()
+                    ->maxLength(255),
                 Forms\Components\Select::make('user_id')
                     ->columnSpanFull()
                     ->required()
@@ -86,14 +91,21 @@ class IdentificationResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('User name')
+                    ->sortable(),
+                Tables\Columns\ImageColumn::make('user.image')
+                    ->label('User phote')
+                    ->sortable(),
                 Tables\Columns\ImageColumn::make('front_side'),
                 Tables\Columns\ImageColumn::make('back_side'),
                 Tables\Columns\TextColumn::make('type')
                     ->searchable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->sortable(),
+                Tables\Columns\BadgeColumn::make('notes')
+                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -113,12 +125,14 @@ class IdentificationResource extends Resource
                     ->action(function (Identification $record) {
                         // Execute the valid() logic here
                         $identification = Identification::find($record->id);
+                        $Identificati = Identification::find($record->id);
+                        Notification::send(User::find($Identificati->user_id), new Notifications('identification accepted', 'the identification you have requested has been accepted', '50'));
                         $identification->status = 'valid';
                         $identification->save();
                         $user = User::find($identification->user_id);
                         $user->identification_verified_at = now();
                         $user->save();
-                        Notification::make()
+                        snackbar::make()
                             ->title('Accepted')
                             ->success()
                             ->send();
@@ -133,9 +147,13 @@ class IdentificationResource extends Resource
                     ->action(function (Identification $record) {
                         // Execute the notValid() logic here
                         $identification = Identification::find($record->id);
+                        $Identificati = Identification::find($record->id);
+                        Notification::send(User::find($Identificati->user_id), new Notifications('identification rejected', 'the identification you have requested has been rejected', '50'));
+
                         $identification->status = 'not valid';
+                        $identification->notes = 'the identification is not clear';
                         $identification->save();
-                        Notification::make()
+                        snackbar::make()
                             ->title('Rejected')
                             ->success()
                             ->send();
