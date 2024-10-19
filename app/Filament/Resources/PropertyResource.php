@@ -140,15 +140,18 @@ class PropertyResource extends Resource
                 Forms\Components\Section::make("Estimated Annualised")
                     ->schema([
                         Forms\Components\TextInput::make('estimated_annualised_return')
-                            ->columnSpanFull()
-                            ->required()
-                            ->maxLength(255),
+                        ->suffix('%')
+                        ->columnSpanFull()
+                        ->required()
+                        ->maxLength(255),
                         Forms\Components\TextInput::make('estimated_annual_appreciation')
                             ->columnSpanFull()
+                            ->suffix('%')
                             ->required()
                             ->maxLength(255),
                         Forms\Components\TextInput::make('estimated_projected_gross_yield')
                             ->columnSpanFull()
+                            ->suffix('%')
                             ->required()
                             ->maxLength(255),
                     ])->columns(3),
