@@ -99,9 +99,10 @@ Route::middleware('auth:sanctum')->group(
         // add Favorites
         Route::post('/favorites/{propertyId}', [FavoriteController::class, 'create']);
         // remove Favorite
-        Route::delete('/favorites/{id}', [FavoriteController::class, 'delete']);
+        // Route::delete('/favorites/{id}', [FavoriteController::class, 'delete']);
         // clear all Favorites
         Route::delete('/favorites', [FavoriteController::class, 'clearAll']);
+        Route::delete('/favorites/{propertyId}', [FavoriteController::class, 'removeFavoriteByPropertyId']);
 
         // payment methods
         // get all payments

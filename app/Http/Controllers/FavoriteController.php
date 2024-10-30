@@ -25,7 +25,7 @@ class FavoriteController extends Controller
     // create a new Favorite
     public function create($prop_id)
     {
-        $property = Property::find($prop_id);
+        $property = Property::find(id: $prop_id);
         if (!$property) {
             return response()->json([
                 'error' => 'Property not found'
@@ -81,4 +81,21 @@ class FavoriteController extends Controller
             'message' => 'Favorites removed successfully'
         ]);
     }
+
+public function removeFavoriteByPropertyId(Request $request, $propertyId)
+{
+    // Assuming `user_id` is available via authentication
+    $userId = auth()->id();
+
+    // Find the favorite record by user_id and property_id
+    $favorite = Favorite::where('user_id', $userId)->where('property_id', $propertyId)->first();
+
+    if ($favorite) {
+        $favorite->delete();
+        return response()->json(['message' => 'Favorite removed successfully.'], 200);
+    }
+
+    return response()->json(['message' => 'Favorite not found.'], 404);
+}
+
 }
