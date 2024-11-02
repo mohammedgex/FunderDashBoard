@@ -74,8 +74,11 @@ class ReceiptResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
+                    ->url(fn($record) => UserResource::getUrl('edit', ['record' => $record->user_id]))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('property.name')
+                    ->color('success')
+                    ->url(fn($record) => PropertyResource::getUrl('edit', ['record' => $record->property_id]))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('count_sheres')
                     ->suffix(' shares')
@@ -83,7 +86,10 @@ class ReceiptResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('method')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')
+                    ->openUrlInNewTab(true) // Opens the image in a new tab when clicked
+                    // ->url(fn($record) => $record->image), // The image URL or path,
+                    ,
                 Tables\Columns\TextColumn::make('receipt_number')
                     ->prefix('#')
                     ->searchable(),

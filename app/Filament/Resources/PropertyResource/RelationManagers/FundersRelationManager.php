@@ -16,9 +16,11 @@ class FundersRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
+                Forms\Components\Select::make('user_id')
+                ->columnSpanFull()
                     ->required()
-                    ->maxLength(255),
+                    ->relationship('user', 'name')
+                    ->required(),
 
                 Forms\Components\TextInput::make('status')
                     ->required()

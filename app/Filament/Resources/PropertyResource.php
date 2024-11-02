@@ -158,7 +158,7 @@ class PropertyResource extends Resource
                 Forms\Components\Select::make('status')
                     ->columnSpanFull()
                     ->options([
-                        "avalible" => "avalible",
+                        "avalible" => "Available",
                         "funded" => "Funded",
                         "rented" => "Rented",
                         "sold out" => "Sold Out",

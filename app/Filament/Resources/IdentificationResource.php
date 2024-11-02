@@ -92,6 +92,7 @@ class IdentificationResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
+                    ->url(fn($record) => UserResource::getUrl('edit', ['record' => $record->user_id]))
                     ->label('User name')
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('user.image')
