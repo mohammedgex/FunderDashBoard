@@ -93,7 +93,6 @@ Route::middleware('auth:sanctum')->group(
         // get Timelines by property id
         Route::get('/timeline/{propId}', [TimelineController::class, 'getTimelines']);
 
-
         // get Favorites by user
         Route::get('/favorites', [FavoriteController::class, 'getFavoByUser']);
         // add Favorites

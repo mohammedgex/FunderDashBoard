@@ -30,10 +30,10 @@ class WalletController extends Controller
         $receipt_pending = $receipts->where('status', 'pending');
         $deposit = 0;
         foreach ($receipt_pending as $receipt) {
-            $sheres_count = $receipt->count_sheres;
-            $property = Property::find($receipt->property_id);
-            $receipt_price = $property->property_price * $sheres_count;
-            $deposit += $receipt_price;
+            $sheres_count = $receipt->count_sheres * 5000;
+            // $property = Property::find($receipt->property_id);
+            // $receipt_price = $property->property_price * $sheres_count;
+            $deposit += $sheres_count;
         }
 
         // number of properties
