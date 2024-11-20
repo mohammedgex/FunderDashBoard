@@ -133,14 +133,14 @@ class WalletController extends Controller
         foreach ($shereFunder as $shere) {
             foreach ($all_rents as $rent) {
                 # code...
-                if ($shere->updated_at->between($rent->start_date, $rent->end_date)) {
-                    $monthsDifference = $shere->updated_at->diffInMonths($rent->end_date);
+                if ($shere->updated_at->between(Carbon::parse($rent->start_date), Carbon::parse($rent->end_date))) {
+                    $monthsDifference = $shere->updated_at->diffInMonths(Carbon::parse($rent->end_date));
                     $total_rent_income += $rent->monthly_income / $property->funder_count * $monthsDifference;
-                } elseif ($shere->updated_at->lessThan($rent->start_date) && !$shere->updated_at->between($rent->start_date, $rent->end_date)) {
-                    $monthsDifference = $rent->start_date->diffInMonths($rent->end_date);
+                } elseif ($shere->updated_at->lessThan(Carbon::parse($rent->start_date)) && !$shere->updated_at->between(Carbon::parse($rent->start_date), Carbon::parse($rent->end_date))) {
+                    $monthsDifference = Carbon::parse($rent->start_date)->diffInMonths(Carbon::parse($rent->end_date));
                     $total_rent_income += $rent->monthly_income / $property->funder_count * $monthsDifference;
                 } elseif ($rent->end_date->isPast()) {
-                    $monthsDifference = $rent->start_date->diffInMonths($date);
+                    $monthsDifference = Carbon::parse($rent->start_date)->diffInMonths($date);
                     $total_rent_income += $rent->monthly_income / $property->funder_count * $monthsDifference;
                 }
             }
@@ -196,7 +196,7 @@ class WalletController extends Controller
             $today = Carbon::today();
             $newDate = $today->day($day);
             $dateAfterMonth = $newDate->addMonth();
-            if ($dateAfterMonth->lessThan($rent_active->end_date)) {
+            if (Carbon::parse($dateAfterMonth)->lessThan(Carbon::parse($rent_active->end_date))) {
                 $expected_next_payment = $dateAfterMonth;
             } else {
                 $expected_next_payment = 'The property is not rented';
