@@ -17,6 +17,9 @@ class WalletController extends Controller
         $receipts = $user->receipts;
         $receipt_not_rejected = $receipts->where('status', '!=', 'rejected');
 
+        //number of shares
+        $shares_funder = Funder::where(['user_id' => $user->id, 'status' => 'funder'])->get();
+
         // my investment
         $investment = 0;
         foreach ($receipt_not_rejected as $receipt) {
@@ -25,6 +28,18 @@ class WalletController extends Controller
             $receipt_price = $property->property_price / $property->funder_count * $sheres_count;
             $investment += $receipt_price;
         }
+
+        // annual appreciation 
+        $annual_appreciation = 0;
+        $properties_of_funder =  $this->getPropOfFunders('funder', $user);
+        $ddd = 0;
+        foreach ($properties_of_funder as $prope) {
+            # code...
+            $shares_funder_in_prop = Funder::where(['property_id' => $prope->id, 'user_id' => $user->id, 'status' => 'funder'])->get();
+            $ddd += count($shares_funder_in_prop) * $prope->estimated_annual_appreciation;
+        }
+        $annual_appreciation = $ddd / count($properties_of_funder);
+
 
         // deposit
         $receipt_pending = $receipts->where('status', 'pending');
@@ -71,11 +86,13 @@ class WalletController extends Controller
 
         return response()->json([
             'receipts' => $receipts->count(),
+            'number_of_shares' => count($shares_funder),
             'my_investments' => $investment,
             'deposit' => $deposit,
             'number_of_properties' => count($properties),
             'monthly_income' => $monthly_income,
-            'annual_gross_yield' => $annual_gross_yield
+            'annual_gross_yield' => $annual_gross_yield,
+            'annual_appreciation' => $annual_appreciation
         ]);
     }
 
@@ -119,7 +136,7 @@ class WalletController extends Controller
                 if ($shere->updated_at->between($rent->start_date, $rent->end_date)) {
                     $monthsDifference = $shere->updated_at->diffInMonths($rent->end_date);
                     $total_rent_income += $rent->monthly_income / $property->funder_count * $monthsDifference;
-                } elseif ($shere->lessThan($rent->start_date) && !$shere->updated_at->between($rent->start_date, $rent->end_date)) {
+                } elseif ($shere->updated_at->lessThan($rent->start_date) && !$shere->updated_at->between($rent->start_date, $rent->end_date)) {
                     $monthsDifference = $rent->start_date->diffInMonths($rent->end_date);
                     $total_rent_income += $rent->monthly_income / $property->funder_count * $monthsDifference;
                 } elseif ($rent->end_date->isPast()) {
@@ -133,6 +150,7 @@ class WalletController extends Controller
         $the_last_payment = 0;
         $rent_active = Rent::where(['property_id' => $property->id, 'status' => 'active'])->first();
         $last_rent_not_active = Rent::where(['property_id' => $property->id, 'status' => 'not active'])->first();
+        $oneMonthAgo = 0;
 
         if ($rent_active) {
             $day = $rent_active->start_date->day;
@@ -154,11 +172,14 @@ class WalletController extends Controller
 
 
 
-        $shere_count_last_month = Funder::where(['property_id' => $id, 'user_id' => $user->id])->whereDate('updated_at', '<', $oneMonthAgo)->get();
+        if ($oneMonthAgo != 0) {
+            # code...
+            $shere_count_last_month = Funder::where(['property_id' => $id, 'user_id' => $user->id])->whereDate('updated_at', '<', $oneMonthAgo)->get();
 
-        foreach ($all_rents as $rent) {
-            if ($oneMonthAgo->between($rent->start_date, $rent->end_date)) {
-                $the_last_payment += $rent->$rent->monthly_income / $property->funder_count * count($shere_count_last_month);
+            foreach ($all_rents as $rent) {
+                if ($oneMonthAgo->between($rent->start_date, $rent->end_date)) {
+                    $the_last_payment += $rent->$rent->monthly_income / $property->funder_count * count($shere_count_last_month);
+                }
             }
         }
 
